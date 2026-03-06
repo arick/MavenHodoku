@@ -20,6 +20,22 @@ There are several URLs that are associated with the original project:
 
 ## Building and Running
 
+### Installing OpenJDK via Conda
+
+If you have [Conda](https://docs.conda.io/) installed, you can create an environment with OpenJDK, Maven, and Gradle using the included `environment.yml`.  This avoids the hassle that users experience, who are on company computers, and who do not have administrative permissions.
+
+Some sites where you can download Conda:
+- [Miniconda for Windows](https://www.anaconda.com/docs/getting-started/miniconda/install#windows-install), 
+- [macOS](https://www.anaconda.com/docs/getting-started/miniconda/install#macos-install), 
+- [Linux](https://www.anaconda.com/docs/getting-started/miniconda/install#linux-install)
+
+After downloading and installing Miniconda, then just run ...
+
+```bash
+conda env create
+conda activate openjdk
+```
+
 ### Prerequisites
 
 - Java 17+ (JDK required for building)
