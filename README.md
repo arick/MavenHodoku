@@ -1,6 +1,6 @@
 ﻿# HoDoKu
 
-Hodoku is a solver/generator/trainer/analyzer for standard Sudoku. It is written in Java/Swing and should therefore run on any platform supported by Java (tested on Windows, Mac and Linux - Ubuntu/GTK+-LAF).
+Hodoku is a solver/generator/trainer/analyzer for standard Sudoku.  It is written in Java/Swing and should therefore run on any platform supported by Java (tested on Windows, Mac and Linux - Ubuntu/GTK+-LAF).
 
 ![screenshot](https://raw.githubusercontent.com/PseudoFish/Hodoku/master/showcase/showcase.png)
 
@@ -8,7 +8,9 @@ Available languages: English and German
 
 ## In Memory of Bernhard Hobiger
 
-[HoDoKu](https://hodoku.sourceforge.net/) was created by [Bernhard Hobiger](https://sourceforge.net/u/hobiwan/profile/), who unfortunately passed away unexpectedly. Numerous people have attempted to continue his legacy — this fork is simply one of many. The latest update to this fork chain was significantly facilitated by [Claude.ai](https://claude.ai).
+[HoDoKu](https://hodoku.sourceforge.net/) was created by [Bernhard Hobiger](https://sourceforge.net/u/hobiwan/profile/), who unfortunately passed away unexpectedly.  Many people have attempted to continue his legacy — this fork is simply one of many. 
+
+**Note:** The latest updates to this fork chain were significantly facilitated by [Claude.ai](https://claude.ai).
 
 There are several URLs that are associated with the original project:
 
@@ -35,6 +37,10 @@ Run the application:
 
 ```bash
 ./Hodoku.sh
+```
+or
+```powershell
+.\Hodoku.ps1
 ```
 
 Or manually:
@@ -66,6 +72,26 @@ gradle jpackageApp
 ```
 
 The app is created at `build/dist/HoDoKu.app` and can be copied to `/Applications` or double-clicked directly.
+
+### MS Windows Executable
+
+To build a native Windows app image (self-contained, no Java install required):
+
+```powershell
+gradle jpackageWin
+```
+
+The app is created at `build\dist\HoDoKu\` and can be run directly:
+
+```powershell
+.\build\dist\HoDoKu\HoDoKu.exe
+```
+
+Or using the included PowerShell launcher script:
+
+```powershell
+.\Hodoku.ps1
+```
 
 ### Memory
 
