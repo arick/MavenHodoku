@@ -1,0 +1,10 @@
+name: openjdk
+
+channels:
+  - conda-forge
+  - defaults
+  
+dependencies:
+  - openjdk
+  - maven
+  - gradle

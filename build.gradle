@@ -62,6 +62,26 @@ tasks.register('run', JavaExec) {
     jvmArgs '--add-opens', 'java.desktop/com.apple.laf=ALL-UNNAMED'
 }
 
+tasks.register('jpackageWin', Exec) {
+    dependsOn shadowJar
+    group = 'distribution'
+    description = 'Builds a native Windows app image using jpackage'
+
+    def libsDir  = layout.buildDirectory.dir('libs').get().asFile.absolutePath
+    def finalDest = layout.buildDirectory.dir('dist').get().asFile.absolutePath
+    def javaHome = System.getenv('JAVA_HOME') ?: 'C:/Program Files/Eclipse Adoptium/jdk-17'
+    def jpackage = "${javaHome}/bin/jpackage"
+
+    commandLine 'cmd', '/c',
+        "${jpackage} " +
+        "--type app-image " +
+        "--input \"${libsDir}\" " +
+        "--main-jar hodoku-3.0.0.jar " +
+        "--name HoDoKu " +
+        "--dest \"${finalDest}\" " +
+        "--java-options \"--add-opens java.desktop/sun.awt=ALL-UNNAMED\""
+}
+
 tasks.register('jpackageApp', Exec) {
     dependsOn shadowJar
     group = 'distribution'
