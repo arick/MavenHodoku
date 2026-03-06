@@ -1,7 +1,6 @@
 # HoDoKu
 
-Hodoku is a solver/generator/trainer/analyzer for standard sudoku. It is written in
-Java/Swing and should therefore run on any platform supported by Java (tested on Windows, Mac and Linux - Ubuntu/GTK+-LAF).
+Hodoku is a solver/generator/trainer/analyzer for standard Sudoku. It is written in Java/Swing and should therefore run on any platform supported by Java (tested on Windows, Mac and Linux - Ubuntu/GTK+-LAF).
 
 ![screenshot](https://raw.githubusercontent.com/PseudoFish/Hodoku/master/showcase/showcase.png)
 
@@ -89,8 +88,7 @@ java -Xmx512m --add-opens java.desktop/com.apple.laf=ALL-UNNAMED -jar target/hod
 
 ### Version 3.0.0
 
-
-[arick](https://github.com/arick) updated the Major version of the build, because when [PseudoFish](https://github.com/PseudoFish) forked the project from [yoki123](https://github.com/yoki123), they dropped all support for the original [Ant](https://ant.apache.org) features, which is a *breaking* change.
+[arick](https://github.com/arick) updated the Major version of the build, because when [PseudoFish](https://github.com/PseudoFish) forked the project from [yoki123](https://github.com/yoki123), they dropped all support for the original [Ant](https://ant.apache.org) features, which was a *breaking* change.
 
 - added support for doing a Gradle build,
 - updated the Maven build,
@@ -98,7 +96,6 @@ java -Xmx512m --add-opens java.desktop/com.apple.laf=ALL-UNNAMED -jar target/hod
 - **NOTE:** Support for the original [Ant](https://ant.apache.org) features were actually dropped in version 2.3.0.
 
 ### Version 2.3.2 (WIP)
-
 
 Minor:
 
