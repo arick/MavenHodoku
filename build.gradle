@@ -48,7 +48,7 @@ jar {
 
 shadowJar {
     archiveBaseName = 'hodoku'
-    archiveVersion = '1.0'
+    archiveVersion = '3.0.0'
     archiveClassifier = ''
     manifest {
         attributes 'Main-Class': 'sudoku.Main'
@@ -60,4 +60,31 @@ tasks.register('run', JavaExec) {
     classpath = files(shadowJar.archiveFile)
     mainClass = 'sudoku.Main'
     jvmArgs '--add-opens', 'java.desktop/com.apple.laf=ALL-UNNAMED'
+}
+
+tasks.register('jpackageApp', Exec) {
+    dependsOn shadowJar
+    group = 'distribution'
+    description = 'Builds a native macOS .app bundle using jpackage'
+
+    def libsDir  = layout.buildDirectory.dir('libs').get().asFile.absolutePath
+    def finalDest = layout.buildDirectory.dir('dist').get().asFile.absolutePath
+    def javaHome = System.getenv('JAVA_HOME') ?: '/usr/local/Cellar/openjdk/25.0.2/libexec/openjdk.jdk/Contents/Home'
+    def jpackage = "${javaHome}/bin/jpackage"
+
+    // jpackage fails on external volumes due to macOS resource fork (._*) files,
+    // so we build to /tmp first, then copy to the project build dir
+    commandLine 'bash', '-c', """
+        rm -rf /tmp/hodoku-dist
+        ${jpackage} \\
+            --type app-image \\
+            --input ${libsDir} \\
+            --main-jar hodoku-3.0.0.jar \\
+            --name HoDoKu \\
+            --dest /tmp/hodoku-dist \\
+            '--java-options' '--add-opens java.desktop/com.apple.laf=ALL-UNNAMED'
+        rm -rf ${finalDest}
+        cp -r /tmp/hodoku-dist ${finalDest}
+        echo "App bundle: ${finalDest}/HoDoKu.app"
+    """.stripIndent()
 }
