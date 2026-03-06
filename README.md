@@ -92,6 +92,7 @@ java -Xmx512m --add-opens java.desktop/com.apple.laf=ALL-UNNAMED -jar target/hod
 
 - added MS Windows app image generation capability via `jpackageWin` Gradle task
 - added `Hodoku.ps1` PowerShell launcher script for Windows
+- added ability to install the OpenJDK, Maven, and Gradle, using Conda
 
 ### Version 3.0.0
 
