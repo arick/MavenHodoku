@@ -218,7 +218,8 @@ public class SamuraiPanel extends JPanel {
     }
 
     /**
-     * Maps canvas (row, col) → {gridIndex, cellIndex}, lowest-numbered grid for overlaps.
+     * Maps canvas (row, col) → {gridIndex, cellIndex}.
+     * When the position is in an overlap, the lowest-numbered grid wins.
      */
     private int[] canvasToGridCell(int canvasR, int canvasC) {
         for (int g = 0; g < SamuraiSudoku.NUM_GRIDS; g++) {
@@ -231,6 +232,59 @@ public class SamuraiPanel extends JPanel {
             }
         }
         return null;
+    }
+
+    /**
+     * Computes the next active cell when moving in the given arrow-key direction.
+     *
+     * <ol>
+     *   <li>Convert the current cell to its 21×21 canvas position.</li>
+     *   <li>Step one cell in the arrow direction.</li>
+     *   <li>If the target canvas cell is still inside the <em>current</em> sub-grid,
+     *       stay in that grid (prevents spurious grid-switches in overlap areas).</li>
+     *   <li>If not, check whether any other grid contains the target canvas cell
+     *       and transition to it (cross-grid navigation).</li>
+     *   <li>If the target is a gap (no grid), wrap within the current grid.</li>
+     * </ol>
+     *
+     * @param gridIndex current grid (0–4)
+     * @param cellIndex current cell within that grid (0–80)
+     * @param direction one of VK_UP, VK_DOWN, VK_LEFT, VK_RIGHT
+     * @return {newGridIndex, newCellIndex}
+     */
+    private int[] navigate(int gridIndex, int cellIndex, int direction) {
+        int localRow = cellIndex / 9;
+        int localCol = cellIndex % 9;
+        int canvasR  = SamuraiSudoku.CANVAS_ORIGINS[gridIndex][0] + localRow;
+        int canvasC  = SamuraiSudoku.CANVAS_ORIGINS[gridIndex][1] + localCol;
+
+        // Step one cell on the canvas
+        int targetR = canvasR + (direction == KeyEvent.VK_DOWN  ?  1 : direction == KeyEvent.VK_UP    ? -1 : 0);
+        int targetC = canvasC + (direction == KeyEvent.VK_RIGHT ?  1 : direction == KeyEvent.VK_LEFT  ? -1 : 0);
+
+        // Prefer the current grid (avoids grid-switch inside overlap cells)
+        int newLocalRow = targetR - SamuraiSudoku.CANVAS_ORIGINS[gridIndex][0];
+        int newLocalCol = targetC - SamuraiSudoku.CANVAS_ORIGINS[gridIndex][1];
+        if (newLocalRow >= 0 && newLocalRow < 9 && newLocalCol >= 0 && newLocalCol < 9) {
+            return new int[]{ gridIndex, newLocalRow * 9 + newLocalCol };
+        }
+
+        // Target is outside the current grid — try to find an adjacent grid
+        int[] transition = canvasToGridCell(targetR, targetC);
+        if (transition != null) {
+            return transition;
+        }
+
+        // Target is a gap — wrap within the current grid
+        int wrappedRow = localRow;
+        int wrappedCol = localCol;
+        switch (direction) {
+            case KeyEvent.VK_UP:    wrappedRow = localRow > 0 ? localRow - 1 : 8; break;
+            case KeyEvent.VK_DOWN:  wrappedRow = localRow < 8 ? localRow + 1 : 0; break;
+            case KeyEvent.VK_LEFT:  wrappedCol = localCol > 0 ? localCol - 1 : 8; break;
+            case KeyEvent.VK_RIGHT: wrappedCol = localCol < 8 ? localCol + 1 : 0; break;
+        }
+        return new int[]{ gridIndex, wrappedRow * 9 + wrappedCol };
     }
 
     // -------------------------------------------------------------------------
@@ -257,18 +311,12 @@ public class SamuraiPanel extends JPanel {
 
         switch (keyCode) {
 
-            // --- Navigation ---
+            // --- Navigation (cross-grid aware) ---
             case KeyEvent.VK_DOWN:
-                activeCell[1] = (row < 8 ? row + 1 : 0) * 9 + col;
-                break;
             case KeyEvent.VK_UP:
-                activeCell[1] = (row > 0 ? row - 1 : 8) * 9 + col;
-                break;
             case KeyEvent.VK_RIGHT:
-                activeCell[1] = row * 9 + (col < 8 ? col + 1 : 0);
-                break;
             case KeyEvent.VK_LEFT:
-                activeCell[1] = row * 9 + (col > 0 ? col - 1 : 8);
+                activeCell = navigate(gridIndex, cellIndex, keyCode);
                 break;
             case KeyEvent.VK_HOME:
                 activeCell[1] = ctrl ? col : row * 9 + 0;
