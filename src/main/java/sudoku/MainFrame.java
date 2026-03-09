@@ -288,6 +288,7 @@ public class MainFrame extends javax.swing.JFrame implements FlavorListener {
 	private javax.swing.JMenu modeMenu;
 	private javax.swing.JMenuItem newMenuItem;
 	private javax.swing.JMenuItem newEmptyMenuItem;
+	private javax.swing.JMenuItem samuraiMenuItem;
 	private javax.swing.JButton newNoteButton;
 	private javax.swing.JButton newGameToolButton;
 	private javax.swing.JMenu optionMenu;
@@ -1285,6 +1286,15 @@ public class MainFrame extends javax.swing.JFrame implements FlavorListener {
 			}
 		});
 		fileMenu.add(newEmptyMenuItem);
+
+		samuraiMenuItem = new javax.swing.JMenuItem();
+		samuraiMenuItem.setText("Samurai Sudoku...");
+		samuraiMenuItem.addActionListener(new java.awt.event.ActionListener() {
+			public void actionPerformed(java.awt.event.ActionEvent evt) {
+				new samurai.SamuraiFrame().setVisible(true);
+			}
+		});
+		fileMenu.add(samuraiMenuItem);
 		fileMenu.add(new javax.swing.JPopupMenu.Separator());
 
 		loadPuzzleMenuItem.setAccelerator(
