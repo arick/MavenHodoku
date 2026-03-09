@@ -11,3 +11,13 @@ build/
 
 # IDEs
 .vscode/
+.classpath
+.project
+.idea/
+*.iml
+
+# Windows
+Thumbs.db
+
+# Java
+*.class
