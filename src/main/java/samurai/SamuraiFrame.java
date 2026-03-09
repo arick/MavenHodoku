@@ -52,30 +52,6 @@ public class SamuraiFrame extends JFrame {
         add(buildToolBar(), BorderLayout.NORTH);
         add(samuraiPanel, BorderLayout.CENTER);
 
-        // Wire up cell-click: toggle between setting a value via input dialog
-        samuraiPanel.setCellClickListener((gridIndex, cellIndex, button) -> {
-            if (currentPuzzle == null) return;
-            if (currentPuzzle.getGrid(gridIndex).isFixed(cellIndex)) return;
-            if (button == 1) {
-                String input = JOptionPane.showInputDialog(
-                        SamuraiFrame.this,
-                        "Enter digit (1–9), or 0 to clear:",
-                        "Set Cell",
-                        JOptionPane.PLAIN_MESSAGE);
-                if (input == null || input.trim().isEmpty()) return;
-                try {
-                    int val = Integer.parseInt(input.trim());
-                    if (val >= 0 && val <= 9) {
-                        currentPuzzle.setCellValue(gridIndex, cellIndex, val, false);
-                        samuraiPanel.repaint();
-                        checkSolved();
-                    }
-                } catch (NumberFormatException ex) {
-                    // ignore invalid input
-                }
-            }
-        });
-
         newPuzzle();
         pack();
     }
