@@ -164,9 +164,48 @@ public class SamuraiSudoku implements Cloneable {
                     }
                 }
             }
+            // After setting a value, candidate sets in the overlap region may have
+            // diverged (the grid's solver removes candidates from buddies, but the
+            // peer grid doesn't know about non-overlap-cell changes).  Intersect
+            // both sides so each only keeps candidates that are valid in both grids.
+            syncOverlapCandidates();
         }
 
         return valid;
+    }
+
+    /**
+     * For every pair of overlap cells, removes any candidate from either side
+     * that has already been eliminated on the other side.  Both grids must
+     * agree: if a digit is gone in one grid's overlap cell it must be gone in
+     * the peer's corresponding cell too.
+     */
+    public void syncOverlapCandidates() {
+        for (int[] def : OVERLAP_DEFS) {
+            int cornerGrid  = def[0];
+            int centerGrid  = def[1];
+            int cornerBlock = def[2];
+            int centerBlock = def[3];
+            int[] cornerCells = Sudoku2.BLOCKS[cornerBlock];
+            int[] centerCells = Sudoku2.BLOCKS[centerBlock];
+            for (int p = 0; p < cornerCells.length; p++) {
+                int cc = cornerCells[p];
+                int ce = centerCells[p];
+                // Skip cells that already have a value set
+                if (grids[cornerGrid].getValue(cc) != 0 || grids[centerGrid].getValue(ce) != 0) {
+                    continue;
+                }
+                for (int cand = 1; cand <= 9; cand++) {
+                    boolean inCorner = grids[cornerGrid].isCandidate(cc, cand);
+                    boolean inCenter = grids[centerGrid].isCandidate(ce, cand);
+                    if (inCorner && !inCenter) {
+                        grids[cornerGrid].setCandidate(cc, cand, false);
+                    } else if (!inCorner && inCenter) {
+                        grids[centerGrid].setCandidate(ce, cand, false);
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -236,6 +275,8 @@ public class SamuraiSudoku implements Cloneable {
         for (int i = 0; i < NUM_GRIDS; i++) {
             syncOverlapFromGrid(i);
         }
+        // Intersect candidate sets so both sides of every overlap agree
+        syncOverlapCandidates();
     }
 
     // -------------------------------------------------------------------------

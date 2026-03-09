@@ -66,8 +66,10 @@ public class SamuraiSolverCoordinator {
                 int after = grid.getUnsolvedCellsAnz();
                 if (after < before) {
                     anyProgress = true;
-                    // Push newly solved overlap cells into neighboring grids
+                    // Push newly solved overlap cells into neighboring grids,
+                    // then intersect candidate sets across the overlap boundary
                     samurai.syncOverlapFromGrid(g);
+                    samurai.syncOverlapCandidates();
                 }
             }
 
@@ -114,6 +116,7 @@ public class SamuraiSolverCoordinator {
 
             if (grid.getUnsolvedCellsAnz() < before) {
                 samurai.syncOverlapFromGrid(g);
+                samurai.syncOverlapCandidates();
                 return true;
             }
         }

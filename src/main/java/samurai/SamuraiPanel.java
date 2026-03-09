@@ -380,13 +380,23 @@ public class SamuraiPanel extends JPanel {
         }
     }
 
-    /** Toggles a candidate in a cell (mirrors SudokuPanel.toggleCandidateInCell). */
+    /** Toggles a candidate in a cell and propagates the change to its overlap peer if applicable. */
     private void toggleCandidate(int gridIndex, int cellIndex, int candidate) {
         Sudoku2 grid = samurai.getGrid(gridIndex);
         if (grid.getValue(cellIndex) != 0) return;
         boolean userMode = !showCandidates;
-        boolean current = grid.isCandidate(cellIndex, candidate, userMode);
-        grid.setCandidate(cellIndex, candidate, !current, userMode);
+        boolean newState = !grid.isCandidate(cellIndex, candidate, userMode);
+        grid.setCandidate(cellIndex, candidate, newState, userMode);
+
+        // Propagate to the overlap peer (center ↔ corner) if this is an overlap cell
+        if (samurai.isOverlapCell(gridIndex, cellIndex)) {
+            int peerGrid = samurai.getOverlapPeerGrid(gridIndex, cellIndex);
+            int peerCell = samurai.getOverlapPeerCell(gridIndex, cellIndex);
+            Sudoku2 peer = samurai.getGrid(peerGrid);
+            if (peer.getValue(peerCell) == 0) {
+                peer.setCandidate(peerCell, candidate, newState, userMode);
+            }
+        }
     }
 
     // -------------------------------------------------------------------------

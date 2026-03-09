@@ -73,6 +73,7 @@ tasks.register('jpackageWin', Exec) {
     def jpackage = "${javaHome}/bin/jpackage"
 
     commandLine 'cmd', '/c',
+        "if exist \"${finalDest}\\HoDoKu\" rmdir /s /q \"${finalDest}\\HoDoKu\" && " +
         "${jpackage} " +
         "--type app-image " +
         "--input \"${libsDir}\" " +
